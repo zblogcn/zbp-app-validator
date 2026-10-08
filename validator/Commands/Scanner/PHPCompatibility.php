@@ -33,10 +33,11 @@ class PHPCompatibility extends Command
     }
 
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $appId = $input->getArgument("appId");
         ZBPWrapper::loadApp($appId);
         (new Task())->run();
+        return 0;
     }
 }

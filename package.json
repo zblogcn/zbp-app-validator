@@ -1,10 +1,32 @@
 {
   "name": "zbp-app-validator",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Z-BlogPHP App Validator",
+  "main": "javascript/gui/main.js",
   "scripts": {
-    "start": "electron javascript/gui/index.html"
+    "start": "electron javascript/gui/main.js",
+    "dist": "electron-builder --win portable --x64"
+  },
+  "build": {
+    "appId": "com.zsxsoft.zbp-app-validator",
+    "productName": "Z-BlogPHP App Validator",
+    "asar": false,
+    "files": [
+      "javascript/**",
+      "validator/**",
+      "vendor/**",
+      "resources/ssl/**",
+      "resources/**",
+      "checker",
+      "composer.json",
+      "config.default.json",
+      "config.json",
+      "phpcs.ruleset.xml",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable"
+    }
   },
   "repository": {
     "type": "git",
@@ -17,19 +39,19 @@
   },
   "homepage": "https://github.com/zsxsoft/zbp-app-validator#readme",
   "dependencies": {
+    "@electron/remote": "^2.1.2",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
     "bluebird": "^3.5.3",
     "debug": "^4.1.0",
     "deep-assign": "^3.0.0",
-    "electron": "^4.0.1",
-    "element-theme": "^2.0.1",
-    "element-ui": "^2.2.1",
+    "element-ui": "^2.15.14",
     "normalize.css": "^8.0.0",
-    "puppeteer": "^1.11.0",
-    "vue": "^2.5.16",
-    "xterm": "^3.2.0"
+    "puppeteer": "^24.0.0",
+    "vue": "^2.7.16"
   },
   "devDependencies": {
-    "electron-rebuild": "^1.7.3",
-    "element-theme-chalk": "^2.2.1"
+    "electron": "^33.0.0",
+    "electron-builder": "^26.15.3"
   }
 }

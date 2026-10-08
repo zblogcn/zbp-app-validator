@@ -20,12 +20,13 @@ class PHPHelper
     public static function getBinary()
     {
         if (PHP_BINARY !== '') {
-            return PHP_BINARY;
+            $binary = PHP_BINARY;
+        } elseif (isset($_SERVER['_'])) {
+            $binary = $_SERVER['_'];
+        } else {
+            throw new \Exception('Cannot get PHP binary path, try to run command insider a shell.');
         }
-        if (isset($_SERVER['_'])) {
-            return $_SERVER['_'];
-        }
-        throw new \Exception('Cannot get PHP binary path, try to run command insider a shell.');
+        return '"' . $binary . '"';
     }
 
     /**

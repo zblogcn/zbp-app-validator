@@ -76,7 +76,7 @@ class StartPipe
     {
         $path = escapeshellarg(ROOT_PATH . DIRECTORY_SEPARATOR . 'checker');
         $arg = $argument === '' ? '' : escapeshellarg($argument);
-        return '"' . PHPHelper::getBinary() . "\" $path $command $arg";
+        return PHPHelper::getBinary() . " $path $command $arg";
     }
 
 

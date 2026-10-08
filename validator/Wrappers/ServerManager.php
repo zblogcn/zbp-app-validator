@@ -45,7 +45,7 @@ class ServerManager
         $pipes = [];
         $listenAddress = Config::get('listenAddress');
         $proc = proc_open(
-            '"' . PHPHelper::getBinary() . '" -S ' . $listenAddress,
+            PHPHelper::getBinary() . ' -S ' . $listenAddress,
             [
                 0 => ["pipe", "r"],
                 1 => ['file', TempHelper::getPath('/server-output.txt'), 'w'],
@@ -62,14 +62,14 @@ class ServerManager
         }
         $status = proc_get_status($proc);
         $pid = $status['pid'];
-        Logger::info("Started PHP Server(PID=${pid}) at $listenAddress");
+        Logger::info("Started PHP Server(PID={$pid}) at $listenAddress");
         $this->pid = $pid;
         file_put_contents($this->pidPath, $pid);
         while (true) {
-            sleep(10000);
             if (!proc_get_status($proc)['running']) {
                 break;
             }
+            sleep(5);
         }
     }
 
@@ -85,9 +85,9 @@ class ServerManager
         if (function_exists('posix_kill')) {
             posix_kill($this->pid, 9 /* SIGKILL */);
         } else if (DIRECTORY_SEPARATOR === '\\') {
-            `taskkill.exe /pid {$this->pid} /f`;
+            shell_exec("taskkill.exe /pid {$this->pid} /f");
         } else {
-            `kill -9 {$this->pid}`;
+            shell_exec("kill -9 {$this->pid}");
         }
 
         @unlink($this->pidPath);

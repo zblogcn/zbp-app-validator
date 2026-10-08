@@ -27,8 +27,9 @@ class RunBrowser extends Command
             ->setDescription('Run the browser to scan JavaScript errors or take screenshots');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         (new Task())->run();
+        return 0;
     }
 }

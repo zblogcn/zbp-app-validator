@@ -19,9 +19,9 @@ class NameChecker extends \PhpParser\NodeVisitorAbstract
         $name = null;
 
         if ($node instanceof Node\Name) {
-            $name = $node->toString('');
+            $name = $node->toString();
         } elseif ($node instanceof Stmt\Function_) {
-            $name = $node->namespacedName->toString('');
+            $name = $node->namespacedName->toString();
         } elseif ($node instanceof Node\Expr\Eval_) {
             $name = 'eval';
         } else if ($node instanceof Node\Expr\ShellExec) {
@@ -31,7 +31,7 @@ class NameChecker extends \PhpParser\NodeVisitorAbstract
             return $node;
         }
 
-        $line = $node->getAttribute('startLine');
+        $line = $node->getStartLine();
         $type = '';
         $data = '';
         if (in_array($name, ['curl_init'])) {

@@ -17,6 +17,21 @@ body, .app {
 }
 .el-main {
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.el-main .el-row {
+  flex: 1;
+  min-height: 0;
+}
+
+/* 终端区域：撑满可用高度，内容与右侧滚动条留出间距 */
+.logs {
+  height: 100%;
+  padding-right: 14px;
+}
+#terminal {
+  height: 100%;
 }
 .el-button--text {
   color: #fff;
@@ -36,4 +51,24 @@ body, .app {
 
 .el-input__inner:focus {
   border-color: #d6e1ec;
+}
+
+/* 终端区域：内容与右侧滚动条留出间距 */
+.logs {
+  padding-right: 14px;
+}
+
+/* xterm 滚动条：细条深色，与主题协调 */
+.logs .xterm-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+.logs .xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.logs .xterm-viewport::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+.logs .xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

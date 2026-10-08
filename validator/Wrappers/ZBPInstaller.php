@@ -45,26 +45,32 @@ class ZBPInstaller
     protected function download()
     {
         $client = new Client();
-        $resource = fopen($this->xmlPath, 'w');
-        $client->request('GET', $this->downloadUrl, ['sink' => $resource]);
+        try {
+            $resource = fopen($this->xmlPath, 'w');
+            $client->request('GET', $this->downloadUrl, ['sink' => $resource]);
+        } catch (\Exception $e) {
+            // 下载失败时删除残缺文件，避免被当作有效缓存
+            @unlink($this->xmlPath);
+            throw $e;
+        }
     }
 
     protected function gitClone()
     {
-        `git clone {$this->cloneUrl} {$this->gitPath}`;
+        shell_exec("git clone {$this->cloneUrl} {$this->gitPath}");
         $this->git = true;
     }
 
     protected function gitPull()
     {
         $gitPath = $this->gitPath;
-        `git pull $gitPath`;
+        shell_exec("git pull $gitPath");
     }
 
     protected function gitVersion()
     {
         chdir($this->gitPath);
-        $ret = `git log --pretty="%h" -n1 HEAD`;
+        $ret = shell_exec('git log --pretty="%h" -n1 HEAD');
         chdir('../../');
         return $ret;
     }
@@ -80,6 +86,11 @@ class ZBPInstaller
             PathHelper::rcopy($this->gitPath, $webPath);
         } else {
             $xml = simplexml_load_file($this->xmlPath, 'SimpleXMLElement');
+            if ($xml === false) {
+                // 安装包损坏，删除后要求重试
+                @unlink($this->xmlPath);
+                throw new \RuntimeException('Z-BlogPHP package is corrupted and has been deleted. Please retry.');
+            }
             $old = umask(0);
             foreach ($xml->file as $f) {
                 $filename = $webPath . DIRECTORY_SEPARATOR . str_replace('\\', '/', $f->attributes());
@@ -93,7 +104,7 @@ class ZBPInstaller
     protected function createEmptyEnvironment()
     {
         if (!$this->isUsingGit()) {
-            if (!is_file($this->xmlPath)) {
+            if (!is_file($this->xmlPath) || filesize($this->xmlPath) === 0) {
                 Logger::info('Downloading latest Z-BlogPHP...');
                 $this->download();
             }

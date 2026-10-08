@@ -42,7 +42,7 @@ class Logger
         $this->log = new Log('log');
         if ($this->hasColorSupport()) {
             $handler = new StreamHandler('php://stdout', Log::DEBUG);
-            $handler->setFormatter(new ColoredLineFormatter());
+            $handler->setFormatter(new ColoredLineFormatter(null, null, true, true));
             $this->log->pushHandler($handler);
         }
     }
@@ -71,7 +71,7 @@ class Logger
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             return
-              '10.0.10586' === PHP_WINDOWS_VERSION_MAJOR . '.' . PHP_WINDOWS_VERSION_MINOR . '.' . PHP_WINDOWS_VERSION_BUILD
+              PHP_WINDOWS_VERSION_BUILD >= 10586
               || false !== getenv('ANSICON')
               || 'ON' === getenv('ConEmuANSI')
               || 'xterm' === getenv('TERM');

@@ -27,8 +27,9 @@ class StartServer extends Command
             ->setDescription('Start the builtin server');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         ServerManager::start();
+        return 0;
     }
 }

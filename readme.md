@@ -17,7 +17,7 @@ Z-BlogPHP App 机器审核工具
 1. 静态危险PHP功能与函数扫描
 1. 全局变量合规性检测
 1. 静态调用数据库随机函数扫描
-1. PHP 7兼容性扫描
+1. PHP 8兼容性扫描
 
 ### 主题审核
 1. 离线W3C规范扫描
@@ -45,7 +45,7 @@ docker run --rm --privileged -it zbp-app-validator
 
 #### 前置条件
 1. Windows 7+ / macOS 10.10+ / Linux。
-1. 已安装 Java 8 / PHP 7 / Nodejs 10。（PHP 7.0 - 7.2 或 7.3.2+）
+1. 已安装 Java 8 / PHP 8.1+ / Nodejs 20+。
 
 #### GUI
 Windows用户直接双击``launcher.exe``即可直接使用GUI。其它系统的GUI正在编写启动器，可使用``npm start``打开GUI。
@@ -78,18 +78,13 @@ php checker
 
 ```bash
 composer update
-php download-dep.php
 npm install
 ```
 如果不使用GUI，已经可以启动项目了。
 
 ### 生成GUI主题
 
-见：http://element-cn.eleme.io/#/zh-CN/component/custom-theme
-
-```bash
-./node_modules/.bin/et -c javascript/gui/element-variables.scss -o javascript/gui/element/
-```
+主题文件已编译完成，位于 `javascript/gui/element/`。如需重新生成，请参考：http://element-cn.eleme.io/#/zh-CN/component/custom-theme
 
 ### 生成Windows启动器
 

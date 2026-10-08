@@ -43,6 +43,29 @@ class PathHelper
         return join(DIRECTORY_SEPARATOR, $path);
     }
 
+    /**
+     * 返回用于日志显示的文件路径：去掉审核器 web 根目录前缀，
+     * 只保留应用内的相对路径（如 \zb_users\plugin\appid\xxx.php）
+     */
+    public static function getDisplayFilename($filename)
+    {
+        $path = self::getAbsoluteFilename($filename);
+        try {
+            $base = ZBPHelper::getPath();
+        } catch (\Throwable $e) {
+            return $path;
+        }
+        if ($base === '') {
+            return $path;
+        }
+        foreach ([$base . DIRECTORY_SEPARATOR, $base . '/', $base . '\\'] as $prefix) {
+            if (stripos($path, $prefix) === 0) {
+                return DIRECTORY_SEPARATOR . substr($path, strlen($prefix));
+            }
+        }
+        return $path;
+    }
+
     public static function rrmdir($dir)
     {
         if (is_dir($dir)) {
@@ -68,7 +91,7 @@ class PathHelper
             while ($file = readdir($dir_handle)) {
                 if ($file[0] !== '.') {
                     if (is_dir($source . DIRECTORY_SEPARATOR . $file)) {
-                        @mkdir($dest . DIRECTORY_SEPARATOR . $file);
+                        @mkdir($dest . DIRECTORY_SEPARATOR . $file, 0755, true);
                         self::rcopy($source . DIRECTORY_SEPARATOR . $file, $dest . DIRECTORY_SEPARATOR . $file);
                     } else {
                         copy($source . DIRECTORY_SEPARATOR . $file, $dest . DIRECTORY_SEPARATOR . $file);

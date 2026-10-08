@@ -462,3 +462,6 @@ __pycache__/
 
 # OpenCover UI analysis results
 OpenCover/
+
+dist
+package-lock.json

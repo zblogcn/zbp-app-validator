@@ -8,7 +8,6 @@
 
 namespace Zsxsoft\AppValidator\Tasks;
 
-use function Sodium\version_string;
 use Zsxsoft\AppValidator\Helpers\Logger;
 use Zsxsoft\AppValidator\Helpers\PathHelper;
 use Zsxsoft\AppValidator\Helpers\PHPHelper;
@@ -31,20 +30,18 @@ class PHPCompatibility
         Logger::info("Version: $minimumPHPVersion to latest");
         $output = trim(
             shell_exec(
-                '"' . PHPHelper::getBinary() . '"' . ' ' .
+                PHPHelper::getBinary() . ' ' .
                 escapeshellarg(PathHelper::getAbsoluteFilename(ROOT_PATH . '/vendor/squizlabs/php_codesniffer/bin/phpcs')) . ' ' .
-                " --standard=PHPCompatibility --runtime-set testVersion $minimumPHPVersion- --report=json -p " .
+                " --standard=PHPCompatibility --runtime-set testVersion $minimumPHPVersion- --report=json " .
                 escapeshellarg(ZBPWrapper::getAppPath())
             )
         );
 
-        $output = substr($output, strpos($output, '(100%)') + 6);
-
-        try {
-            $output = preg_replace('/Time: .+; Memory: .+$/i', '', $output);
-            $data = json_decode($output);
-        } catch (\Exception $e) {
-            throw new \Exception('Parse output failed');
+        $data = json_decode($output);
+        if (is_null($data) || !isset($data->files)) {
+            Logger::error('Parse PHPCompatibility output failed:');
+            Logger::error($output);
+            return;
         }
 
         $sum = 0;
@@ -59,7 +56,7 @@ class PHPCompatibility
                 if (in_array($error->source, ["Internal.Tokenizer.Exception", "Internal.NoCodeFound"])) {
                     continue;
                 }
-                Logger::error($fileName . ': ');
+                Logger::error(PathHelper::getDisplayFilename($fileName) . ': ');
                 Logger::error("Line {$error->line}: {$error->message}");
                 $sum++;
             }

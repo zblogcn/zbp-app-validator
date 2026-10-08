@@ -32,13 +32,14 @@ class ChangeTheme extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $appId = $input->getArgument("appId");
         $app = ZBPWrapper::loadApp($appId);
         if ($app->type !== 'theme') {
-            return;
+            return 1;
         }
         ZBPWrapper::changeTheme();
+        return 0;
     }
 }

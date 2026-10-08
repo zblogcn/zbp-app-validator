@@ -34,13 +34,16 @@ class Start extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         Logger::info('Starting a new check project...');
+        // 先停掉上次可能残留的服务器进程，避免占用 tmp\web 导致清理失败
+        ServerManager::stop();
         TempHelper::createTemp();
         ZBPInstaller::createEmptyEnvironment();
         if ($input->getOption('start-server')) {
             ServerManager::start();
         }
+        return 0;
     }
 }

@@ -45,9 +45,13 @@ class MeaningfulBackgroundProcess extends BackgroundProcess
                     )
                 );
             }
-            $output = array_filter(explode(" ", shell_exec("wmic process get parentprocessid,processid | find \"$ppid\"")));
-            array_pop($output);
-            $this->pid = end($output);
+            $cmd = "powershell -NoProfile -Command \"Get-CimInstance Win32_Process | Where-Object { \$_.ParentProcessId -eq $ppid } | Select-Object -ExpandProperty ProcessId\"";
+            $childPid = trim(shell_exec($cmd));
+            if (is_numeric($childPid) && (int)$childPid > 0) {
+                $this->pid = (int)$childPid;
+            } else {
+                $this->pid = $ppid;
+            }
             //shell_exec(sprintf('%s &', $this->command, $outputFile));
             break;
         case self::OS_NIX:

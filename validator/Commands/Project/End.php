@@ -25,9 +25,10 @@ class End extends Command
             ->setDescription('End the started project');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         Logger::info('Cleaning project...');
         ServerManager::stop();
+        return 0;
     }
 }

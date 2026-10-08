@@ -40,9 +40,10 @@ class StartPipe extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $appId = $input->getArgument("appId");
         (new Task())->run($appId, $input->getOption('exit'));
+        return 0;
     }
 }

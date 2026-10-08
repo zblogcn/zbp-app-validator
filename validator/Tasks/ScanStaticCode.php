@@ -33,9 +33,9 @@ class ScanStaticCode
      */
     public function checkFunctions()
     {
-        $outputter = new ErrorOutputter($this->_path);
+        $outputter = new ErrorOutputter(PathHelper::getDisplayFilename($this->_path));
         $checker = new NameChecker();
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory)->createForNewestSupportedVersion();
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NameResolver);
         $traverser->addVisitor($checker);
@@ -51,7 +51,7 @@ class ScanStaticCode
             if (strtolower($extension) !== 'php') {
                 return;
             }
-            Logger::error("Parse {$this->_path} Error.");
+            Logger::error("Parse " . PathHelper::getDisplayFilename($this->_path) . " Error.");
             Logger::error($e->getMessage());
         }
     }
@@ -64,7 +64,7 @@ class ScanStaticCode
         $regex = "/[\"']rand\(\)[\"'][ \t]*?\=\>[\"'][ \t]*?[\"']|ORDER[ \t]*BY[\t ]*rand\(/i";
         $matches = null;
         if (preg_match($regex, $this->_file)) {
-            Logger::warning('Maybe using rand() in MySQL in ' . $this->_path);
+            Logger::warning('Maybe using rand() in MySQL in ' . PathHelper::getDisplayFilename($this->_path));
             Logger::warning('You should remove it.');
         }
     }
@@ -85,7 +85,7 @@ class ScanStaticCode
                     return;
                 }
                 Logger::warning('Maybe no CSRF protection in backend!');
-                Logger::warning($this->_path);
+                Logger::warning(PathHelper::getDisplayFilename($this->_path));
             }
         }
     }
